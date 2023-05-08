@@ -1,10 +1,10 @@
 //require ribrary
 const axios = require("axios");
 
-module.exports.getplayersdata = async (apikey, username) =>{
+module.exports.getplayersdata = async (apikey, username, mode) =>{
     try{
     const response = await axios.get(
-        `https://osu.ppy.sh/api/get_user?&k=${apikey}&type=string&m=1&u=${username}`
+        `https://osu.ppy.sh/api/get_user?&k=${apikey}&type=string&m=${mode}&u=${username}`
     );
     const playerdata = response.data;
     const data = playerdata[0];
@@ -39,7 +39,7 @@ module.exports.getplayersdata = async (apikey, username) =>{
 
 module.exports.getplayerscore = async (apikey, beatmapId, username) => {
     const response = await axios.get(
-        `https://osu.ppy.sh/api/get_scores?b=${beatmapId}&k=${apikey}&type=string&m=1&u=${username}`
+        `https://osu.ppy.sh/api/get_scores?b=${beatmapId}&k=${apikey}&type=string&u=${username}`
     );
     const responsedata = response.data
     const responsescore = responsedata[0]

@@ -1,5 +1,6 @@
 //require ribrary
 const axios = require("axios");
+const { modeconvert } = require("../Mode/Mode");
 
 module.exports.getMapInfo = async (maplink, apikey, mods) => {
 	const beatmapId = maplink.split("#")[1].split("/")[1];
@@ -27,7 +28,7 @@ module.exports.getMapInfo = async (maplink, apikey, mods) => {
 		ar: data[0].diff_approach,
 		hp: data[0].diff_drain,
 		maplink: maplink,
-		totallength: data[0].total_length,
+		totallength: lengthsec,
 		lengthmin: time.minutes,
 		lengthsec: time.seconds,
 		approved: data[0].approved,
@@ -54,7 +55,6 @@ module.exports.getMapforRecent = async (beatmapId, apikey, mods) => {
 		lengthsec = lengthsec  / 1.5
 	}
 	const time = convertSecond(lengthsec)
-	const maplink = `https://osu.ppy.sh/beatmapsets/${beatmapId}`
 
 
 	return {
@@ -69,12 +69,19 @@ module.exports.getMapforRecent = async (beatmapId, apikey, mods) => {
 		cs: data[0].diff_size,
 		ar: data[0].diff_approach,
 		hp: data[0].diff_drain,
-		maplink: maplink,
+		maplink: `https://osu.ppy.sh/beatmapsets/${data[0].beatmapset_id}#${modeconvert(data[0].mode)}/${beatmapId}`,
 		totallength: data[0].total_length,
-		approved: data[0].approved,
 		lengthmin: time.minutes,
 		lengthsec: time.seconds,
-		beatmapset_id: data[0].beatmapset_id
+		approved: data[0].approved,
+		beatmapId: beatmapId,
+		beatmapset_id: data[0].beatmapset_id,
+		mode: data[0].mode,
+		countnormal: data[0].count_normal,
+		countslider: data[0].count_slider,
+		countspinner: data[0].count_spinner,
+		favouritecount: data[0].favourite_count,
+		playcount: data[0].playcount
 		}
 
 	}catch(e){

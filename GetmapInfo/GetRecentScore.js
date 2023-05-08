@@ -3,12 +3,15 @@ const axios = require("axios");
 
 module.exports.Recentplay = async (apikey, player, mode) => {
     const response = await axios.get(
-        `https://osu.ppy.sh/api/get_user_recent?k=${apikey}&u=${player}&limit=1&m=1&a=1&type=string`
+        `https://osu.ppy.sh/api/get_user_recent?k=${apikey}&u=${player}&limit=1&m=${mode}&a=1&type=string`
     )
     const re = response.data
+    if(re[0] === undefined){
+        return "0"
+    }
 
     return{
-        
+
             "beatmap_id"   : re[0].beatmap_id,
             "score"        : re[0].score,
             "maxcombo"     : re[0].maxcombo,

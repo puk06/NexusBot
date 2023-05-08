@@ -15,6 +15,14 @@ module.exports.modeconvert = (mode) => {
     return "ctb"
   }else if(mode == "3"){
     return "mania"
+  }else if(mode == "o"){
+    return "0"
+  }else if(mode == "t"){
+    return "1"
+  }else if(mode == "c"){
+    return "2"
+  }else if(mode == "m"){
+    return "3"
   }else{
     return "nomode"
   }

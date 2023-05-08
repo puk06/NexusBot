@@ -22,14 +22,16 @@ module.exports.calculateSR = async (beatmapId, mods, mode) => {
 	}
 
 }
+
 function getOsuBeatmapFile (beatmapId) {
 	return axios(`https://osu.ppy.sh/osu/${beatmapId}`, {
-		responseType: "arrayBuffer", // ? Same thing as buffer
-	})
+		responseType: "arrayBuffer",
+		}
+	)
 }
 
 function calculateStarRating (beatmap, mods, mode) {
-	let map = new Beatmap({ bytes: new Uint8Array(Buffer.from(beatmap.data)) }); // yea its simple to convert it
+	let map = new Beatmap({ bytes: new Uint8Array(Buffer.from(beatmap.data)) });
 
 	let score = {
 		mode: mode,
@@ -46,4 +48,37 @@ function calculateStarRating (beatmap, mods, mode) {
 		S4: calc.acc(97).performance(map).pp,
 		S5: calc.acc(95).performance(map).pp
 	}
+}
+
+function calculateStarRatingwithacc (beatmap, mods, mode, Acc, misses) {
+	let map = new Beatmap({ bytes: new Uint8Array(Buffer.from(beatmap.data)) });
+
+	let score = {
+		mode: mode,
+		mods: mods,
+	}
+	let calc = new Calculator(score);
+	let Calculated = calc.performance(map);
+	return {
+		sr: Calculated.difficulty.stars,
+		ppwithacc: calc.acc(Acc).nMisses(misses).performance(map).pp,
+		SSPP: calc.acc(100).nMisses(0).performance(map).pp
+	}
+}
+
+module.exports.calculateSRwithacc = async (beatmapId, mods, mode, acc, misses) => {
+
+	try {
+		const beatmapFile = await getOsuBeatmapFile(beatmapId);
+		const srppdata = calculateStarRatingwithacc(beatmapFile, mods, mode, acc, misses);
+		return {
+			sr: srppdata.sr,
+			ppwithacc: srppdata.ppwithacc,
+			SSPP: srppdata.SSPP
+		}
+	} catch(e) {
+		console.log(e)
+		return 0; // fallback to 0 if you get error
+	}
+
 }

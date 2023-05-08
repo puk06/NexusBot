@@ -27,12 +27,13 @@ const ModStrings = {
 
 module.exports.parseModString = (modStringArray) => {
 	const mods = modStringArray.reduce((acc, modString) => {
-	const modValue = ModtoStrings[modString];
-	if (modValue) {
-		return acc | modValue;
-	}
-	return acc;
-	}, 0);
+		const modValue = ModtoStrings[modString];
+		if (modValue) {
+			return acc | modValue;
+		}
+		return acc;
+		}, 0
+	);
 	return mods;
 };
 
