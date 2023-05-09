@@ -247,10 +247,13 @@ client.on("message", async(message) =>
 					modsforcalc = 0
 				}else{
 					mods = splitString(args.slice(2))
+
 					if (mods.includes("NC")) {
 						let modsnotDT = mods.filter((item) => item.match("NC") == null);
 						modsnotDT.push("DT")
 						modsforcalc = parseModString(modsnotDT)
+					}else{
+						modsforcalc = parseModString(mods)
 					}
 				}
 				const maplink = message.content.split(" ")[1]
