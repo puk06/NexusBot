@@ -39,15 +39,28 @@ client.on("message", async(message) =>
 					message.reply("How to use: !mapl maplink mods(optional)")
 				}else{
 					const MessageMaplink = message.content.split(" ")[1]
-					let Mods
+					let Mods = []
 					if(message.content.substring(4).split(/\s+/).slice(2).length === 0){
-						Mods = ['NM']
+						Mods.push("NM")
+						console.log(Mods)
 					}else{
 					Mods = splitString(message.content.substring(4).split(/\s+/).slice(2))
+						if (Mods.includes("NC")) {
+							Mods.push("DT")
+							let modsnotNC = Mods.filter((item) => item.match("NC") == null);
+							Mods = modsnotNC;
+						}
 					}
 					const MapInfo = await getMapInfo(MessageMaplink, apikey, Mods)
+					let BPM = MapInfo.bpm
+					if(Mods.includes("DT")){
+						BPM *= 1.5
+					}else if(Mods.includes("HT")){
+						BPM /= 0.75;
+					}
 					const mapperdata = await getplayersdata(apikey, MapInfo.mapper)
 					const Modsconverted = parseModString(Mods)
+					console.log(Modsconverted)
 					const srpps = await calculateSR(MapInfo.beatmapId, Modsconverted, modeconvert(MapInfo.mode))
 					const Mapstatus = mapstatus(MapInfo.approved)
 
@@ -76,6 +89,15 @@ client.on("message", async(message) =>
 						}
 						srpps['S' + i] = result;
 					}
+					let showonlymodsdata = message.content.substring(4).split(/\s+/).slice(2)
+					let Showonlymods = []
+					if(showonlymodsdata.length === 0){
+					Showonlymods.push("NM")
+					}else{
+						Showonlymods = showonlymodsdata
+					}
+
+					let od = ODscaled(MapInfo.od, Mods)
 
 					//make Discord.js EmbedMessage
 					const maplembed = new MessageEmbed()
@@ -84,7 +106,7 @@ client.on("message", async(message) =>
 					.setURL(MapInfo.maplink)
 					.addField("Music and Backgroud",`:musical_note:[Song Preview](https://b.ppy.sh/preview/${MapInfo.beatmapset_id}.mp3) :frame_photo:[Full background](https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/raw.jpg)`)
 					.setAuthor(`Created by ${MapInfo.mapper}`, mapperdata.iconurl, mapperdata.playerurl)
-					.addField(`[**__${MapInfo.version}__**] **+${Mods.join("")}**`, `Combo: \`${MapInfo.combo}\` Stars: \`${parseFloat(srpps.sr).toFixed(2)}\` \n Length: \`${MapInfo.lengthmin}:${lengthsec}\` BPM: \`${MapInfo.bpm}\` Objects: \`${MapInfo.combo}\` \n CS: \`${MapInfo.cs}\` AR: \`${MapInfo.ar}\` OD: \`${MapInfo.od}\` HP: \`${MapInfo.hp}\` Spinners: \`${MapInfo.countspinner}\``, true)
+					.addField(`[**__${MapInfo.version}__**] **+${Showonlymods.join("")}**`, `Combo: \`${MapInfo.combo}\` Stars: \`${parseFloat(srpps.sr).toFixed(2)}\` \n Length: \`${MapInfo.lengthmin}:${lengthsec}\` BPM: \`${parseFloat(BPM).toFixed(1)}\` Objects: \`${MapInfo.combo}\` \n CS: \`${MapInfo.cs}\` AR: \`${MapInfo.ar}\` OD: \`${od}\` HP: \`${MapInfo.hp}\` Spinners: \`${MapInfo.countspinner}\``, true)
 					.addField("**Download**", `[Official](https://osu.ppy.sh/beatmapsets/${MapInfo.beatmapset_id}/download)\n[Nerinyan(no video)](https://api.nerinyan.moe/d/${MapInfo.beatmapset_id}?nv=1)\n[Beatconnect](https://beatconnect.io/b/${MapInfo.beatmapset_id})\n[chimu.moe](https://api.chimu.moe/v1/download/${MapInfo.beatmapset_id}?n=1)`, true)
 					.addField(`:heart: ${MapInfo.favouritecount} :play_pause: ${MapInfo.playcount}`,`\`\`\` Acc |    98%   |    99%   |   99.5%  |   100%   | \n ----+----------+----------+----------+----------+  \n  PP |${srpps.S3}|${srpps.S2}|${srpps.S1}|${srpps.S0}|\`\`\``, false)
 					.setImage(`https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/cover.jpg`)
@@ -99,7 +121,6 @@ client.on("message", async(message) =>
 		if(message.content.startsWith("!rt")){
 			try {
 				let playername;
-
 				if (message.content === "!rt") {
 				message.reply("How to use: !rt mode(osu, o, taiko, t) username(optional)")
 				return
@@ -198,8 +219,7 @@ client.on("message", async(message) =>
 					.setImage(`https://assets.ppy.sh/beatmaps/${GetMapInfo.beatmapset_id}/covers/cover.jpg`)
 					.setTimestamp()
 					.setFooter(`${Mapstatus} mapset of ${GetMapInfo.mapper}`, mappersdata.iconurl);
-					await message.channel.send(embed)
-					.then((sentMessage) => {
+					await message.channel.send(embed).then((sentMessage) => {
 						setTimeout(() => {
 							const embednew = new MessageEmbed()
 							.setColor("BLUE")
@@ -214,7 +234,7 @@ client.on("message", async(message) =>
 					}
 				)
 			}catch (e) {
-			console.log(e);
+				console.log(e);
 			}
 		}
 

@@ -10,6 +10,7 @@ module.exports.parseMods = (mods) => {
 }
 
 const ModStrings = {
+	0: "NM",
 	1: "NF",
 	2: "EZ",
 	8: "HD",
@@ -38,6 +39,7 @@ module.exports.parseModString = (modStringArray) => {
 };
 
 const ModtoStrings = {
+	"NM": 0,
 	"NF": 1,
 	"EZ": 2,
 	"HD": 8,
