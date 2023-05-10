@@ -6,7 +6,7 @@ The information sent to Discord is similar, as it is based on Bathbot, but the c
 
 This bot is a rewritten code of AeroBot a.k.a. Hoshino Bot to support all modes. the layout of the one sent to Discord (Embed) is almost all the same.
 
-Embed based [Bathbot](https://github.com/MaxOhn/Bathbot)
+### Embed based [Bathbot](https://github.com/MaxOhn/Bathbot)
 
 # How to use
 
