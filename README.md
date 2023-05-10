@@ -8,6 +8,8 @@ This bot is a rewritten code of AeroBot a.k.a. Hoshino Bot to support all modes.
 
 ### Embed based [Bathbot](https://github.com/MaxOhn/Bathbot)
 
+### If you want to add this bot use this [link](https://discord.com/api/oauth2/authorize?client_id=1105049601762930738&permissions=92160&scope=bot)
+
 # How to use
 
 start 
