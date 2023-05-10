@@ -73,6 +73,11 @@ Example ```!ispp https://osu.ppy.sh/beatmapsets/1875669#taiko/3859915 HDNCHR```
 
 ![isppcommand](https://i.imgur.com/TeyaAmE.png)
 
+5:`!lb <maplink> <mods(optional)>`
+
+Example ```!lb https://osu.ppy.sh/beatmapsets/1717748#fruits/3510391 HDHR```
+
+![lbcommand](https://i.imgur.com/ZYLUt9n.png)
 
 
 
