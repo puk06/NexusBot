@@ -56,11 +56,22 @@ Example ```!mapl https://osu.ppy.sh/beatmapsets/1895850#taiko/3907074 HDNC```
 
 Username can be omitted if you are using the !reg command
 
-Example ```!rt Hoshino1```
-
 Example ```!rt (Hoshino1)```
 
-![rtcommand](https://i.imgur.com/8ojEKN3.png)
+![rtcommand](https://i.imgur.com/bRwwBIz.png)
+
+3:`!reg <osu!username>`
+
+Connect your Discord name to your osu!username, allowing you to omit your osu!username
+
+Message reply
+```<Discord name>is saved as <osu!username>!```
+
+4:`!ispp <maplink> <mods(optional)>`
+
+Example ```!ispp https://osu.ppy.sh/beatmapsets/1875669#taiko/3859915 HDNCHR```
+
+![isppcommand](https://i.imgur.com/TeyaAmE.png)
 
 
 
