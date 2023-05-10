@@ -44,4 +44,24 @@ npm i axios -g
 npm i dotenv -g
 ```
 
+# COMMAND
+
+1: `!mapl <maplink> <mods>` 
+
+Example ```!mapl https://osu.ppy.sh/beatmapsets/1895850#taiko/3907074 HDNC```
+
+![maplcommand](https://i.imgur.com/1f9UUi1.png)
+
+2: `!ro(osu!standard) !rt(taiko) !rc(ctb) !rm(mania) <username(optional)>`
+
+Username can be omitted if you are using the !reg command
+
+Example ```!rt Hoshino1```
+
+Example ```!rt (Hoshino1)```
+
+![rtcommand](https://i.imgur.com/8ojEKN3.png)
+
+
+
 
