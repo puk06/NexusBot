@@ -39,7 +39,7 @@ npm i axios -g
 
 [dotenv](https://github.com/motdotla/dotenv)
 ```
-npm i dotenv
+npm i dotenv -g
 ```
 
 
