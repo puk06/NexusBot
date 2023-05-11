@@ -37,7 +37,7 @@ try{
 			if(message.content.startsWith("!mapl")){
 				try{
 					if(message.content == "!mapl"){
-						message.reply("How to use: !mapl maplink mods(optional)")
+						message.reply("How to use: !mapl <Maplink> <Mods(optional)>")
 					}else{
 						const MessageMaplink = message.content.split(" ")[1]
 						let Mods = []
@@ -592,13 +592,13 @@ try{
 			}
 
 			if (message.content === "!r") {
-				message.reply("How to use: !r(o, t, c, m) username(optional)")
+				message.reply("How to use: !r(o, t, c, m) <Username(optional)>")
 				return
 			}
 
 			if (message.content.startsWith("!reg")) {
 				if(message.content === "!reg"){
-					message.reply("How to use: !reg osu!username")
+					message.reply("How to use: !reg <osu!username>")
 				}else{
 					const username = message.author.username;
 					const osuid = message.content.split(" ")[1];
@@ -615,7 +615,7 @@ try{
 			if(message.content.startsWith("!ispp")){
 				try{
 					if(message.content === "!ispp"){
-					message.reply("使い方: !ispp [maplink] [mods(Optional)]")
+					message.reply("How to use: !ispp <Maplink> <Mods(Optional)>")
 					}else{
 					const args = message.content.substring(4).split(/\s+/);
 					let mods
@@ -678,7 +678,7 @@ try{
 			if (message.content.startsWith("!lb")) {
 				try{
 					if(message.content === "!lb"){
-						message.reply("How to use !lb <Maplink> <Mods(Optional)>")
+						message.reply("How to use: !lb <Maplink> <Mods(Optional)>")
 						return
 					}else{
 						const maplink = message.content.split(" ")[1]
@@ -805,11 +805,15 @@ try{
 			}
 
 			if(message.content === "!help"){
-				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods. ")
+				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods.\n 6:`!s <maplink> <username(optional)>`: You can view your best score at the map. ")
 			}
 
 			if(message.content.startsWith("!s")){
 				try{
+					if(message.content === "!s"){
+						message.reply("How to use: !s <Maplink> <username(optional)>")
+						return
+					}
 					let playername;
 					if(message.content.split(" ")[2] === undefined){
 						try{
