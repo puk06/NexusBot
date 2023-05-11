@@ -825,6 +825,10 @@ try{
 					const maplink = message.content.split(" ")[1]
 					const Mapinfo = await getMapInfowithoutmods(maplink, apikey)
 					const playersscore = await getplayerscore(apikey, beatmapId, playername, Mapinfo.mode)
+					if(playersscore == 0){
+						message.reply("No score found. Is this convertmap? convertmap is incompatible!")
+						return
+					}
 					const Playersinfo = await getplayersdata(apikey, playername, Mapinfo.mode)
 					const Mapperinfo = await getplayersdata(apikey, Mapinfo.mapper, Mapinfo.mode)
 					const acc = calcAccuracyanymode(playersscore.count300, playersscore.count100, playersscore.count50, playersscore.countmiss, playersscore.countkatu, playersscore.countgeki, Mapinfo.mode)
