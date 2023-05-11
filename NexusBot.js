@@ -690,10 +690,16 @@ try{
 						}else{
 							mods = splitString(args.slice(1))
 						}
+
+						let modsnotNC
+						if(mods.includes("NC")) {
+							mods.push("DT")
+							modsnotNC = mods.filter((item) => item.match("NC") == null);
+						}
 						const Mapinfo = await getMapInfo(maplink, apikey, mods)
 						const mapperinfo = await getplayersdata(apikey, Mapinfo.mapper, Mapinfo.mode)
 						const mapsetlink = Mapinfo.maplink.split("/")[4].split("#")[0];
-						let SR = await calculateSR(beatmapid, parseModString(mods), modeconvert(Mapinfo.mode))
+						let SR = await calculateSR(beatmapid, parseModString(modsnotNC), modeconvert(Mapinfo.mode))
 						let BPM = Mapinfo.bpm
 						if (mods.includes('NC')) {
 							mods.push('DT');
