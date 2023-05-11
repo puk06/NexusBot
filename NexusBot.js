@@ -683,7 +683,12 @@ try{
 						const maplink = message.content.split(" ")[1]
 						const beatmapid = maplink.split("/")[5].split(" ")[0]
 						const args = message.content.substring(4).split(/\s+/);
-						let mods = splitString(args.slice(1))
+						let mods = []
+						if(args.slice(1).length === 0){
+							mods.push("NM")
+						}else{
+							mods = splitString(args.slice(1))
+						}
 						const Mapinfo = await getMapInfo(maplink, apikey, mods)
 						const mapperinfo = await getplayersdata(apikey, Mapinfo.mapper, Mapinfo.mode)
 						const mapsetlink = Mapinfo.maplink.split("/")[4].split("#")[0];
