@@ -47,7 +47,6 @@ npm i dotenv -g
 # COMMAND
 
 1: `!mapl <maplink> <mods>` 
-
 You can view about the map with mod(If you want Mods to be NM, please leave the Mods field blank)
 
 Example ```!mapl https://osu.ppy.sh/beatmapsets/1895850#taiko/3907074 HDNC```
@@ -64,7 +63,6 @@ Example ```!rt (Hoshino1)```
 ![rtcommand](https://i.imgur.com/bRwwBIz.png)
 
 3:`!reg <osu!username>`
-
 Connect your Discord name to your osu!username, allowing you to omit your osu!username
 
 Message reply
