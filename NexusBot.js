@@ -791,6 +791,10 @@ try{
 					message.reply("エラーが発生したよ！")
 				}
 			}
+
+			if(message.content === "!help"){
+				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods. ")
+			}
 		}
 	)
 }catch(e){
