@@ -116,3 +116,36 @@ function convertSecond(seconds) {
 	seconds: remainingSeconds
 	};
 }
+
+module.exports.getMapInfowithoutmods = async (maplink, apikey) => {
+	const beatmapId = maplink.split("#")[1].split("/")[1];
+	const response = await axios.get(
+		`https://osu.ppy.sh/api/get_beatmaps?k=${apikey}&b=${beatmapId}`
+	);
+	const data = response.data;
+
+	return {
+		sr: parseFloat(data[0].difficultyrating),
+		combo: parseInt(data[0].max_combo),
+		od: parseFloat(data[0].diff_overall),
+		title: data[0].title,
+		artist: data[0].artist,
+		version: data[0].version,
+		mapper: data[0].creator,
+		bpm: data[0].bpm,
+		cs: data[0].diff_size,
+		ar: data[0].diff_approach,
+		hp: data[0].diff_drain,
+		maplink: maplink,
+		totallength: data[0].total_length,
+		approved: data[0].approved,
+		beatmapId: beatmapId,
+		beatmapset_id: data[0].beatmapset_id,
+		mode: data[0].mode,
+		countnormal: data[0].count_normal,
+		countslider: data[0].count_slider,
+		countspinner: data[0].count_spinner,
+		favouritecount: data[0].favourite_count,
+		playcount: data[0].playcount
+	};
+}

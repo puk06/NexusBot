@@ -37,9 +37,9 @@ module.exports.getplayersdata = async (apikey, username, mode) =>{
 
 }
 
-module.exports.getplayerscore = async (apikey, beatmapId, username) => {
+module.exports.getplayerscore = async (apikey, beatmapId, username, mode) => {
     const response = await axios.get(
-        `https://osu.ppy.sh/api/get_scores?b=${beatmapId}&k=${apikey}&type=string&u=${username}`
+        `https://osu.ppy.sh/api/get_scores?b=${beatmapId}&k=${apikey}&m=${mode}&type=string&u=${username}`
     );
     const responsedata = response.data
     const responsescore = responsedata[0]

@@ -8,11 +8,11 @@ const fs = require("fs")
 const { calculateSR, calculateSRwithacc } = require("./CalculateSR/CalculateSRPP")
 const { modeconvert } = require("./Mode/Mode")
 const { calcAccuracyosu, calcAccuracytaiko, calcAccuracyctb, calcAccuracymania, calcAccuracyanymode } = require("./Acc/Acc")
-const { getMapInfo, mapstatus, getMapforRecent } = require("./GetmapInfo/GetMapInfo")
+const { getMapInfo, mapstatus, getMapforRecent, getMapInfowithoutmods } = require("./GetmapInfo/GetMapInfo")
 const { GetMapScore } = require("./GetmapInfo/GetMapScore")
 const { Recentplay } = require("./GetmapInfo/GetRecentScore")
 const { parseModString, parseMods, splitString } = require("./Modsconvert/Mods")
-const { getplayersdata} = require("./GetUser/userplays")
+const { getplayersdata, getplayerscore } = require("./GetUser/userplays")
 const { numDigits } = require("./numDigit/numDigit");
 const { ODscaled } = require("./OD/ODscaled")
 
@@ -148,7 +148,7 @@ try{
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
 					const acc = calcAccuracyosu(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss));
 					let BPM = GetMapInfo.bpm;
-					let modsforcalc
+					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
 						let modsnotNC = mods.filter((item) => item.match("NC") == null);
 						mods = modsnotNC;
@@ -262,7 +262,7 @@ try{
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
 					const acc = calcAccuracytaiko(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.countmiss));
 					let BPM = GetMapInfo.bpm;
-					let modsforcalc
+					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
 						let modsnotNC = mods.filter((item) => item.match("NC") == null);
 						mods = modsnotNC;
@@ -375,7 +375,7 @@ try{
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
 					const acc = calcAccuracyctb(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss), parseInt(recentplay.countkatu));
 					let BPM = GetMapInfo.bpm;
-					let modsforcalc
+					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
 						let modsnotNC = mods.filter((item) => item.match("NC") == null);
 						mods = modsnotNC;
@@ -385,6 +385,7 @@ try{
 						BPM /= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, getMapforRecent.mode)
+					console.log(modsforcalc)
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
 						ifFC100 = parseInt(recentplay.count100)
@@ -496,7 +497,7 @@ try{
 					const mania300 = parseInt(recentplay.count300) + parseInt(recentplay.countgeki)
 					const acc = calcAccuracymania(mania300, parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss), parseInt(recentplay.countkatu));
 					let BPM = GetMapInfo.bpm;
-					let modsforcalc
+					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
 						let modsnotNC = mods.filter((item) => item.match("NC") == null);
 						mods = modsnotNC;
@@ -799,6 +800,89 @@ try{
 
 			if(message.content === "!help"){
 				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods. ")
+			}
+
+			if(message.content.startsWith("!s")){
+				try{
+					let playername;
+					if(message.content.split(" ")[2] === undefined){
+						try{
+							let username = message.author.username;
+							let osuid = fs.readFileSync(`./Player infomation/${username}.txt`, "utf-8");
+							playername = osuid;
+						}catch(e){
+							console.log(e);
+							message.reply("Error")
+						}
+					}else {
+						playername = message.content.split(" ")[2];
+						if(playername === undefined){
+							message.reply("Error")
+							return
+						}
+					}
+					const beatmapId = message.content.split("#")[1].split("/")[1].split(" ")[0];
+					const maplink = message.content.split(" ")[1]
+					const Mapinfo = await getMapInfowithoutmods(maplink, apikey)
+					const playersscore = await getplayerscore(apikey, beatmapId, playername, Mapinfo.mode)
+					const Playersinfo = await getplayersdata(apikey, playername, Mapinfo.mode)
+					const Mapperinfo = await getplayersdata(apikey, Mapinfo.mapper, Mapinfo.mode)
+					const acc = calcAccuracyanymode(playersscore.count300, playersscore.count100, playersscore.count50, playersscore.countmiss, playersscore.countkatu, playersscore.countgeki, Mapinfo.mode)
+
+					let stringmods = parseMods(playersscore.enabled_mods)
+					if(stringmods.includes("DT") && stringmods.includes("NC")){
+						let modsnotNC = stringmods.filter((item) => item.match("NC") == null);
+						stringmods = modsnotNC;
+					}
+
+					const srpp = await calculateSRwithacc(beatmapId, parseModString(stringmods), modeconvert(Mapinfo.mode), acc, parseInt(playersscore.countmiss))
+
+					let Hits
+					if(Mapinfo.mode == 0 || 1){
+						Hits = `{${playersscore.count300}/${playersscore.count100}/${playersscore.countmiss}}`
+					}else if(Mapinfo.mode == 2){
+						Hits = `{${playersscore.count300}/${playersscore.count100}/${playersscore.count50}/${playersscore.countmiss}}`
+					}else if(Mapinfo.mode == 3){
+						let maniascore300 = parseInt(playersscore.count300) + parseInt(playersscore.countgeki)
+						Hits `{${maniascore300}/${playersscore.countkatu}/${playersscore.count100}/${playersscore.count50}/${playersscore.countmiss}}`
+					}
+
+					let showonlymods = parseMods(playersscore.enabled_mods)
+					if(showonlymods.includes("DT") && showonlymods.includes("NC")){
+						let modsnotDT = showonlymods.filter((item) => item.match("DT") == null);
+						showonlymods = modsnotDT;
+					}else if(showonlymods.length == 0){
+						showonlymods.push("NM")
+					}
+
+					let bpm = Mapinfo.bpm
+					if (stringmods.includes("DT") || stringmods.includes("NC")) {
+						bpm *= 1.5;
+					}else if(stringmods.includes("HT")){
+						bpm /= 0.75
+					}
+
+					const embed = new MessageEmbed()
+						.setColor("BLUE")
+						.setTitle(`${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
+						.setURL(maplink)
+						.setAuthor(`Mapped by ${Mapinfo.mapper}`, Mapperinfo.iconurl, `https://osu.ppy.sh/users/${Mapperinfo.user_id}`)
+						.addField("Player name",`[${playername}](https://osu.ppy.sh/users/${playername})`,true)
+						.addField("SR", `\`★${parseFloat(srpp.sr).toFixed(2)}\``, true)
+						.addField("BPM", `\`${bpm}\``, true)
+						.addField("Rank", `\`${playersscore.rank}\``, true)
+						.addField("Hits", Hits, true)
+						.addField("Mods", `\`${showonlymods.join("")}\``, true)
+						.addField("Accuracy", `\`${acc}%\``, true)
+						.addField("PP", `**${parseFloat(srpp.ppwithacc).toFixed(2)}** / ${parseFloat(srpp.SSPP).toFixed(2)} `, true)
+						.addField("Mirror Download link",`[Nerinyan](https://api.nerinyan.moe/d/${Mapinfo.beatmapset_id}?nv=1) \n [Beatconnect](https://beatconnect.io/b/${Mapinfo.beatmapset_id})`, true)
+						.setImage(`https://assets.ppy.sh/beatmaps/${Mapinfo.beatmapset_id}/covers/cover.jpg`)
+						.setFooter(`Played by ${playername}  #${Playersinfo.pp_rank} (${Playersinfo.country}${Playersinfo.pp_country_rank})`, Playersinfo.iconurl);
+						message.channel.send(embed);
+				}catch(e){
+					console.log(e)
+					message.reply("Error")
+				}
 			}
 		}
 	)
