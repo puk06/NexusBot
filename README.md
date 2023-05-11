@@ -68,6 +68,7 @@ Connect your Discord name to your osu!username, allowing you to omit your osu!us
 Message reply
 ```<Discord name>is saved as <osu!username>!```
 
+
 4:`!ispp <maplink> <mods(optional)>`
 It will tell you if the map is pp
 
@@ -83,7 +84,7 @@ Example ```!lb https://osu.ppy.sh/beatmapsets/1717748#fruits/3510391 HDHR```
 ![lbcommand](https://i.imgur.com/ZYLUt9n.png)
 
 6:`!s <maplink> <username(optional)>`
-You can see your best record on that map.
+You can see your best record on that map.(Converted scores are not supported)
 
 Example```!s https://osu.ppy.sh/beatmapsets/1402249#taiko/2892814 (Hoshino1)```
 
