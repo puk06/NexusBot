@@ -18,7 +18,7 @@ module.exports.checkStream = (beatmapId, bpm) => {
             let stream = 0;
             let maxStream = 0;
             let prevValue = null;
-            const interval = bpm / 2.8
+            const interval =  ((60 / bpm) * 1000 * 1/4) + 1
             const streamData = fs.createReadStream(`./BeatmapFolder/${beatmapId}.txt`);
             const lineReader = require('readline').createInterface(
                 {
