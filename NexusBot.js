@@ -157,7 +157,7 @@ try{
 					}else if(mods.includes("HT")) {
 						BPM /= 0.75;
 					}
-					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, getMapforRecent.mode)
+					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, GetMapInfo.mode)
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
 						ifFC100 = parseInt(recentplay.count100) + parseInt(recentplay.count50)
@@ -271,7 +271,7 @@ try{
 					}else if(mods.includes("HT")) {
 						BPM /= 0.75;
 					}
-					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, getMapforRecent.mode)
+					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, GetMapInfo.mode)
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
 						ifFC100 = parseInt(recentplay.count100);
@@ -384,7 +384,7 @@ try{
 					}else if(mods.includes("HT")) {
 						BPM /= 0.75;
 					}
-					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, getMapforRecent.mode)
+					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, GetMapInfo.mode)
 					console.log(modsforcalc)
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
@@ -506,7 +506,7 @@ try{
 					}else if(mods.includes("HT")) {
 						BPM /= 0.75;
 					}
-					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, getMapforRecent.mode)
+					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, GetMapInfo.mode)
 
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
