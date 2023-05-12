@@ -1,7 +1,6 @@
 //require library
 const { Client, Intents,  MessageEmbed } = require("discord.js");
 require('dotenv').config();
-const axios = require("axios");
 const fs = require("fs")
 
 //requireFIle
@@ -15,6 +14,7 @@ const { parseModString, parseMods, splitString } = require("./Modsconvert/Mods")
 const { getplayersdata, getplayerscore } = require("./GetUser/userplays")
 const { numDigits } = require("./numDigit/numDigit");
 const { ODscaled } = require("./OD/ODscaled")
+const { getOsuBeatmapFile, checkStream } = require("./Streamcheck/Streamcheck")
 
 //apikeys
 const apikey = process.env.APIKEY
@@ -807,7 +807,7 @@ try{
 			}
 
 			if(message.content === "!help"){
-				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods.\n 6:`!s <maplink> <username(optional)>` You can view your best score at the map. ")
+				message.reply("How to use command \n 1: `!mapl <maplink> <mods(optional)>` You can get more information about the map. By adding mods to the command, you can see the SR, PP, and BPM when the mods are applied. \n 2:`!r<mode(o, t, c, m)> <username(optional)>` You can view the most recent your record for each mode. \n 3:`!reg <osu!username>` It will be possible to link Discord username to osu!username and omit usernames when sending commands(!rt command). \n 4:`!ispp <maplink> <mods(optional)>` It calculates the pp per song total time and tells you if it is efficient. \n 5:`!lb <maplink> <mods(optional)>` You can view the top 5 rankings by mods.\n 6:`!s <maplink> <username(optional)>` You can view your best score at the map.\n 7: `!check <maplink>` It show the map's max stream length!")
 			}
 
 			if(message.content.startsWith("!s")){
@@ -898,6 +898,28 @@ try{
 				}catch(e){
 					console.log(e)
 					message.reply("Error")
+				}
+			}
+
+			if(message.content.startsWith("!check")){
+				try{
+					if(message.content == "!check"){
+						message.reply("How to use: !check <Maplink>")
+						return
+					}
+					const beatmapId = message.content.split(" ")[1].split("/")[5]
+					const bpm = await getMapInfowithoutmods(message.content.split(" ")[1], apikey)
+					await getOsuBeatmapFile(beatmapId)
+					const streamdata = await checkStream(beatmapId, bpm.bpm)
+					await message.reply(`Streamlength: ${streamdata} `)
+					try {
+						fs.unlinkSync(`./BeatmapFolder/${beatmapId}.txt`);
+					}catch(e) {
+						console.log(e)
+					}
+				}catch(e){
+					message.reply("Error")
+					console.log(e)
 				}
 			}
 		}
