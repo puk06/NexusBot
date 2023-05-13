@@ -252,8 +252,8 @@ try{
 					}
 					const recentplay = await Recentplay(apikey, playername, 1);
 						if(recentplay == 0){
-						message.reply("No records found for this player within 24 hours")
-						return
+							message.reply("No records found for this player within 24 hours")
+							return
 						}
 					let mods = parseMods(recentplay.enabled_mods)
 					let modforresult = parseMods(recentplay.enabled_mods)
@@ -693,7 +693,7 @@ try{
 							mods = splitString(args.slice(1))
 						}
 
-						let modsnotNC
+						let modsnotNC = mods
 						if(mods.includes("NC")) {
 							mods.push("DT")
 							modsnotNC = mods.filter((item) => item.match("NC") == null);
