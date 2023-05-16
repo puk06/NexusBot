@@ -404,7 +404,7 @@ try{
 					}else{
 						ifFC300 = parseInt(GetMapInfo.combo) - parseInt(recentplay.count100) - parseInt(recentplay.countmiss)
 					}
-					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: ifFC50, 0: 0, geki: 0, kati: 0}, "fruits")
+					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: ifFC50, 0: 0, geki: 0, katu: 0}, "fruits")
 					const percentage = parseFloat((parseInt(recentplay.totalhitcount) / parseInt(GetMapInfo.combo)) * 100).toFixed(0);
 					const Mapstatus = mapstatus(GetMapInfo.approved);
 					const recentpp = await calculateSRwithacc(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode), acc, parseInt(recentplay.countmiss))
