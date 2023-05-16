@@ -29,6 +29,11 @@ Download to run file
 npm i rosu-pp -g
 ```
 
+[osu-api-extended](https://github.com/cyperdark/osu-api-extended)
+```
+npm i osu-api-extended
+```
+
 [discord.jsV12.3.5](https://discord.js.org/#/)
 ```
 npm i discord.js@12.3.5 -g
