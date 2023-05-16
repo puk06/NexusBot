@@ -2,11 +2,11 @@
 const { Client, Intents,  MessageEmbed } = require("discord.js");
 require('dotenv').config();
 const fs = require("fs")
+const tools = require("osu-api-extended")
 
 //requireFIle
 const { calculateSR, calculateSRwithacc } = require("./CalculateSR/CalculateSRPP")
 const { modeconvert } = require("./Mode/Mode")
-const { calcAccuracyosu, calcAccuracytaiko, calcAccuracyctb, calcAccuracymania, calcAccuracyanymode } = require("./Acc/Acc")
 const { getMapInfo, mapstatus, getMapforRecent, getMapInfowithoutmods } = require("./GetmapInfo/GetMapInfo")
 const { GetMapScore } = require("./GetmapInfo/GetMapScore")
 const { Recentplay } = require("./GetmapInfo/GetRecentScore")
@@ -146,7 +146,7 @@ try{
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
 					const playersdata = await getplayersdata(apikey, playername, GetMapInfo.mode);
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
-					const acc = calcAccuracyosu(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss));
+					const acc = tools.tools.accuracy({300: recentplay.count300, 100: recentplay.count100, 50: recentplay.count50, 0: recentplay.countmiss, geki: recentplay.countgeki, katu: recentplay.countkatu}, "osu")
 					let BPM = GetMapInfo.bpm;
 					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
@@ -157,7 +157,7 @@ try{
 					}else if(mods.includes("HT")) {
 						BPM /= 0.75;
 					}
-					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, mdoeconvert(GetMapInfo.mode))
+					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
 						ifFC100 = parseInt(recentplay.count100) + parseInt(recentplay.count50)
@@ -171,7 +171,7 @@ try{
 					}else{
 						ifFC300 = (parseInt(GetMapInfo.combo) - (parseInt(recentplay.count300) + (parseInt(recentplay.count100)))) + parseInt(recentplay.count300)
 					}
-					const ifFCacc = calcAccuracyosu(ifFC300, ifFC100, 0, 0);
+					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: 0, 0: 0, geki: 0, katu:0}, "osu")
 					const percentage = parseFloat((parseInt(recentplay.totalhitcount) / parseInt(GetMapInfo.combo)) * 100).toFixed(0);
 					const Mapstatus = mapstatus(GetMapInfo.approved);
 					const recentpp = await calculateSRwithacc(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode), acc, parseInt(recentplay.countmiss))
@@ -220,7 +220,6 @@ try{
 								.setURL(GetMapInfo.maplink)
 								.setAuthor(`${playersdata.username}: ${playersdata.pp_raw}pp (#${playersdata.pp_rank} ${playersdata.country}${playersdata.pp_country_rank})`, playersdata.iconurl,playersdata.playerurl)
 								.addField("`Result`",`**${recentplay.rank}** (**${percentage}%**) + **${modforresult}**   **Score**:**${recentplay.score}** (**ACC**:**${acc}%**) \n  **PP**:**${parseFloat(recentpp.ppwithacc).toFixed(2)}** / ${parseFloat(iffcpp.SSPP).toFixed(2)}   [**${recentplay.maxcombo}**x / ${GetMapInfo.combo}x]   {${recentplay.count300}/${recentplay.count100}/${recentplay.countmiss}}`, true)
-								.setThumbnail(`https://b.ppy.sh/thumb/${maplink}l.jpg`)
 								sentMessage.edit(embednew)
 								}, 20000
 							)
@@ -260,7 +259,7 @@ try{
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
 					const playersdata = await getplayersdata(apikey, playername, GetMapInfo.mode);
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
-					const acc = calcAccuracytaiko(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.countmiss));
+					const acc = tools.tools.accuracy({300: recentplay.count300, 100: recentplay.count100, 50: recentplay.count50, 0: recentplay.countmiss, geki: recentplay.countgeki, katu: recentplay.countkatu}, "taiko")
 					let BPM = GetMapInfo.bpm;
 					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
@@ -285,7 +284,7 @@ try{
 					}else{
 						ifFC300 = parseInt(GetMapInfo.combo) - parseInt(recentplay.count100) - parseInt(recentplay.countmiss)
 					}
-					const ifFCacc = calcAccuracytaiko(ifFC300, ifFC100, 0);
+					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: 0, 0: 0, geki: 0, katu: 0}, "taiko")
 					const percentage = parseFloat((parseInt(recentplay.totalhitcount) / parseInt(GetMapInfo.combo)) * 100).toFixed(0);
 					const Mapstatus = mapstatus(GetMapInfo.approved);
 					const recentpp = await calculateSRwithacc(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode), acc, parseInt(recentplay.countmiss))
@@ -373,7 +372,7 @@ try{
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
 					const playersdata = await getplayersdata(apikey, playername, GetMapInfo.mode);
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
-					const acc = calcAccuracyctb(parseInt(recentplay.count300), parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss), parseInt(recentplay.countkatu));
+					const acc = tools.tools.accuracy({300: recentplay.count300, 100: recentplay.count100, 50: recentplay.count50, 0: recentplay.countmiss, geki: recentplay.countgeki, katu: recentplay.countkatu}, "fruits")
 					let BPM = GetMapInfo.bpm;
 					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
@@ -385,7 +384,6 @@ try{
 						BPM /= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
-					console.log(modsforcalc)
 					let ifFC100;
 					if ((recentplay.countmiss === "0")) {
 						ifFC100 = parseInt(recentplay.count100)
@@ -406,7 +404,7 @@ try{
 					}else{
 						ifFC300 = parseInt(GetMapInfo.combo) - parseInt(recentplay.count100) - parseInt(recentplay.countmiss)
 					}
-					const ifFCacc = calcAccuracyctb(ifFC300, ifFC100, ifFC50, 0, 0);
+					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: ifFC50, 0: 0, geki: 0, kati: 0}, "fruits")
 					const percentage = parseFloat((parseInt(recentplay.totalhitcount) / parseInt(GetMapInfo.combo)) * 100).toFixed(0);
 					const Mapstatus = mapstatus(GetMapInfo.approved);
 					const recentpp = await calculateSRwithacc(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode), acc, parseInt(recentplay.countmiss))
@@ -494,8 +492,7 @@ try{
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
 					const playersdata = await getplayersdata(apikey, playername, GetMapInfo.mode);
 					const mappersdata = await getplayersdata(apikey, GetMapInfo.mapper);
-					const mania300 = parseInt(recentplay.count300) + parseInt(recentplay.countgeki)
-					const acc = calcAccuracymania(mania300, parseInt(recentplay.count100), parseInt(recentplay.count50), parseInt(recentplay.countmiss), parseInt(recentplay.countkatu));
+					const acc = tools.tools.accuracy({300: recentplay.count300, 100: recentplay.count100, 50: recentplay.count50, 0: recentplay.countmiss, geki: recentplay.countgeki, katu: recentplay.countkatu}, "mania")
 					let BPM = GetMapInfo.bpm;
 					let modsforcalc = parseModString(mods)
 					if (mods.includes("NC")) {
@@ -532,7 +529,7 @@ try{
 					}else{
 						ifFC300 = parseInt(GetMapInfo.combo) - parseInt(recentplay.countkatu) - parseInt(recentplay.count100) - parseInt(recentplay.count50) - parseInt(recentplay.countmiss)
 					}
-					const ifFCacc = calcAccuracymania(ifFC300, ifFC100, ifFC50, 0, ifFC200);
+					const ifFCacc = tools.tools.accuracy({300: ifFC300, 100: ifFC100, 50: ifFC50, 0: 0, geki: 0, katu: ifFC200}, "mania")
 					const percentage = parseFloat((parseInt(recentplay.totalhitcount) / parseInt(GetMapInfo.combo)) * 100).toFixed(0);
 					const Mapstatus = mapstatus(GetMapInfo.approved);
 					const recentpp = await calculateSRwithacc(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode), acc, parseInt(recentplay.countmiss))
@@ -722,11 +719,11 @@ try{
 						let acc3
 						let acc4
 						if (resulttop5.length === 5){
-							acc0 = calcAccuracyanymode(resulttop5[0].count300, resulttop5[0].count100,resulttop5[0].count50, resulttop5[0].countmiss, resulttop5[0].countkatu, resulttop5[0].countgeki, Mapinfo.mode)
-							acc1 = calcAccuracyanymode(resulttop5[1].count300, resulttop5[1].count100,resulttop5[1].count50, resulttop5[1].countmiss, resulttop5[1].countkatu, resulttop5[1].countgeki, Mapinfo.mode)
-							acc2 = calcAccuracyanymode(resulttop5[2].count300, resulttop5[2].count100,resulttop5[2].count50, resulttop5[2].countmiss, resulttop5[2].countkatu, resulttop5[2].countgeki, Mapinfo.mode)
-							acc3 = calcAccuracyanymode(resulttop5[3].count300, resulttop5[3].count100,resulttop5[3].count50, resulttop5[3].countmiss, resulttop5[3].countkatu, resulttop5[3].countgeki, Mapinfo.mode)
-							acc4 = calcAccuracyanymode(resulttop5[4].count300, resulttop5[4].count100,resulttop5[4].count50, resulttop5[4].countmiss, resulttop5[4].countkatu, resulttop5[4].countgeki, Mapinfo.mode)
+							acc0 = tools.tools.accuracy({300: resulttop5[0].count300, 100: resulttop5[0].count100, 50: resulttop5[0].count50, 0: resulttop5[0].countmiss, geki:  resulttop5[0].countgeki, katu: resulttop5[0].countkatu}, modeconvert(Mapinfo.mode))
+							acc1 = tools.tools.accuracy({300: resulttop5[1].count300, 100: resulttop5[1].count100, 50: resulttop5[1].count50, 0: resulttop5[1].countmiss, geki:  resulttop5[1].countgeki, katu: resulttop5[1].countkatu}, modeconvert(Mapinfo.mode))
+							acc2 = tools.tools.accuracy({300: resulttop5[2].count300, 100: resulttop5[2].count100, 50: resulttop5[2].count50, 0: resulttop5[2].countmiss, geki:  resulttop5[2].countgeki, katu: resulttop5[2].countkatu}, modeconvert(Mapinfo.mode))
+							acc3 = tools.tools.accuracy({300: resulttop5[3].count300, 100: resulttop5[3].count100, 50: resulttop5[3].count50, 0: resulttop5[3].countmiss, geki:  resulttop5[3].countgeki, katu: resulttop5[3].countkatu}, modeconvert(Mapinfo.mode))
+							acc4 = tools.tools.accuracy({300: resulttop5[4].count300, 100: resulttop5[4].count100, 50: resulttop5[4].count50, 0: resulttop5[4].countmiss, geki:  resulttop5[4].countgeki, katu: resulttop5[4].countkatu}, modeconvert(Mapinfo.mode))
 								const embed = new MessageEmbed()
 									.setColor("BLUE")
 									.setTitle(`Map leaderboard:${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
@@ -741,10 +738,10 @@ try{
 									.setImage(`https://assets.ppy.sh/beatmaps/${mapsetlink}/covers/cover.jpg`)
 							message.channel.send(embed)
 						}else if(resulttop5.length === 4){
-							acc0 = calcAccuracyanymode(resulttop5[0].count300, resulttop5[0].count100,resulttop5[0].count50, resulttop5[0].countmiss, resulttop5[0].countkatu, resulttop5[0].countgeki, Mapinfo.mode)
-							acc1 = calcAccuracyanymode(resulttop5[1].count300, resulttop5[1].count100,resulttop5[1].count50, resulttop5[1].countmiss, resulttop5[1].countkatu, resulttop5[1].countgeki, Mapinfo.mode)
-							acc2 = calcAccuracyanymode(resulttop5[2].count300, resulttop5[2].count100,resulttop5[2].count50, resulttop5[2].countmiss, resulttop5[2].countkatu, resulttop5[2].countgeki, Mapinfo.mode)
-							acc3 = calcAccuracyanymode(resulttop5[3].count300, resulttop5[3].count100,resulttop5[3].count50, resulttop5[3].countmiss, resulttop5[3].countkatu, resulttop5[3].countgeki, Mapinfo.mode)
+							acc0 = tools.tools.accuracy({300: resulttop5[0].count300, 100: resulttop5[0].count100, 50: resulttop5[0].count50, 0: resulttop5[0].countmiss, geki:  resulttop5[0].countgeki, katu: resulttop5[0].countkatu}, modeconvert(Mapinfo.mode))
+							acc1 = tools.tools.accuracy({300: resulttop5[1].count300, 100: resulttop5[1].count100, 50: resulttop5[1].count50, 0: resulttop5[1].countmiss, geki:  resulttop5[1].countgeki, katu: resulttop5[1].countkatu}, modeconvert(Mapinfo.mode))
+							acc2 = tools.tools.accuracy({300: resulttop5[2].count300, 100: resulttop5[2].count100, 50: resulttop5[2].count50, 0: resulttop5[2].countmiss, geki:  resulttop5[2].countgeki, katu: resulttop5[2].countkatu}, modeconvert(Mapinfo.mode))
+							acc3 = tools.tools.accuracy({300: resulttop5[3].count300, 100: resulttop5[3].count100, 50: resulttop5[3].count50, 0: resulttop5[3].countmiss, geki:  resulttop5[3].countgeki, katu: resulttop5[3].countkatu}, modeconvert(Mapinfo.mode))
 								const embed = new MessageEmbed()
 									.setColor("BLUE")
 									.setTitle(`Map leaderboard:${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
@@ -758,9 +755,9 @@ try{
 									.setImage(`https://assets.ppy.sh/beatmaps/${mapsetlink}/covers/cover.jpg`)
 							message.channel.send(embed)
 						}else if (resulttop5.length === 3){
-							acc0 = calcAccuracyanymode(resulttop5[0].count300, resulttop5[0].count100,resulttop5[0].count50, resulttop5[0].countmiss, resulttop5[0].countkatu, resulttop5[0].countgeki, Mapinfo.mode)
-							acc1 = calcAccuracyanymode(resulttop5[1].count300, resulttop5[1].count100,resulttop5[1].count50, resulttop5[1].countmiss, resulttop5[1].countkatu, resulttop5[1].countgeki, Mapinfo.mode)
-							acc2 = calcAccuracyanymode(resulttop5[2].count300, resulttop5[2].count100,resulttop5[2].count50, resulttop5[2].countmiss, resulttop5[2].countkatu, resulttop5[2].countgeki, Mapinfo.mode)
+							acc0 = tools.tools.accuracy({300: resulttop5[0].count300, 100: resulttop5[0].count100, 50: resulttop5[0].count50, 0: resulttop5[0].countmiss, geki:  resulttop5[0].countgeki, katu: resulttop5[0].countkatu}, modeconvert(Mapinfo.mode))
+							acc1 = tools.tools.accuracy({300: resulttop5[1].count300, 100: resulttop5[1].count100, 50: resulttop5[1].count50, 0: resulttop5[1].countmiss, geki:  resulttop5[1].countgeki, katu: resulttop5[1].countkatu}, modeconvert(Mapinfo.mode))
+							acc2 = tools.tools.accuracy({300: resulttop5[2].count300, 100: resulttop5[2].count100, 50: resulttop5[2].count50, 0: resulttop5[2].countmiss, geki:  resulttop5[2].countgeki, katu: resulttop5[2].countkatu}, modeconvert(Mapinfo.mode))
 								const embed = new MessageEmbed()
 									.setColor("BLUE")
 									.setTitle(`Map leaderboard:${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
@@ -773,8 +770,8 @@ try{
 									.setImage(`https://assets.ppy.sh/beatmaps/${mapsetlink}/covers/cover.jpg`)
 							message.channel.send(embed)
 						}else if(resulttop5.length === 2){
-							acc0 = calcAccuracyanymode(resulttop5[0].count300, resulttop5[0].count100,resulttop5[0].count50, resulttop5[0].countmiss, resulttop5[0].countkatu, resulttop5[0].countgeki, Mapinfo.mode)
-							acc1 = calcAccuracyanymode(resulttop5[1].count300, resulttop5[1].count100,resulttop5[1].count50, resulttop5[1].countmiss, resulttop5[1].countkatu, resulttop5[1].countgeki, Mapinfo.mode)
+							acc0 = tools.tools.accuracy({300: resulttop5[0].count300, 100: resulttop5[0].count100, 50: resulttop5[0].count50, 0: resulttop5[0].countmiss, geki:  resulttop5[0].countgeki, katu: resulttop5[0].countkatu}, modeconvert(Mapinfo.mode))
+							acc1 = tools.tools.accuracy({300: resulttop5[1].count300, 100: resulttop5[1].count100, 50: resulttop5[1].count50, 0: resulttop5[1].countmiss, geki:  resulttop5[1].countgeki, katu: resulttop5[1].countkatu}, modeconvert(Mapinfo.mode))
 								const embed = new MessageEmbed()
 									.setColor("BLUE")
 									.setTitle(`Map leaderboard:${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
@@ -786,7 +783,7 @@ try{
 									.setImage(`https://assets.ppy.sh/beatmaps/${mapsetlink}/covers/cover.jpg`)
 							message.channel.send(embed)
 						}else if(resulttop5.length === 1){
-							acc0 = calcAccuracyanymode(resulttop5[0].count300, resulttop5[0].count100,resulttop5[0].count50, resulttop5[0].countmiss, resulttop5[0].countkatu, resulttop5[0].countgeki, Mapinfo.mode)
+							acc0 = tools.tools.accuracy({300: resulttop5[0].count300, 100: resulttop5[0].count100, 50: resulttop5[0].count50, 0: resulttop5[0].countmiss, geki:  resulttop5[0].countgeki, katu: resulttop5[0].countkatu}, modeconvert(Mapinfo.mode))
 							const embed = new MessageEmbed()
 								.setColor("BLUE")
 								.setTitle(`Map leaderboard:${Mapinfo.artist} - ${Mapinfo.title} [${Mapinfo.version}]`)
@@ -843,7 +840,7 @@ try{
 					}
 					const Playersinfo = await getplayersdata(apikey, playername, Mapinfo.mode)
 					const Mapperinfo = await getplayersdata(apikey, Mapinfo.mapper, Mapinfo.mode)
-					const acc = calcAccuracyanymode(playersscore.count300, playersscore.count100, playersscore.count50, playersscore.countmiss, playersscore.countkatu, playersscore.countgeki, Mapinfo.mode)
+					const acc = tools.tools.accuracy({300: playersscore.count300, 100: playersscore.count100, 50: playersscore.count50, 0: playersscore.countmiss, geki : playersscore.countgeki, katu: playersscore.countgeki}, modeconvert(Mapinfo.mode))
 
 					let stringmods = parseMods(playersscore.enabled_mods)
 					if(stringmods.includes("DT") && stringmods.includes("NC")){
