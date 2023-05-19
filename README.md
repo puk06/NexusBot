@@ -20,33 +20,19 @@ NexusBot.js
 # REQUIRED LIBRARY
 
 [Node.js](https://nodejs.org/ja)
-```
-Download to run file
-```
 
 [rosu-pp-js](https://github.com/MaxOhn/rosu-pp-js)
-```
-npm i rosu-pp -g
-```
 
 [osu-api-extended](https://github.com/cyperdark/osu-api-extended)
-```
-npm i osu-api-extended
-```
 
-[discord.jsV12.3.5](https://discord.js.org/#/)
-```
-npm i discord.js@12.3.5 -g
-```
+[discord.js](https://discord.js.org/#/)
 
 [axios](https://www.npmjs.com/package/axios)
-```
-npm i axios -g
-```
 
 [dotenv](https://github.com/motdotla/dotenv)
+
 ```
-npm i dotenv -g
+npm i
 ```
 
 # COMMAND
