@@ -31,6 +31,10 @@ NexusBot.js
 
 [dotenv](https://github.com/motdotla/dotenv)
 
+[fs](https://www.npmjs.com/package/fs)
+
+[readline](https://www.npmjs.com/package/readline)
+
 ```
 npm i
 ```
