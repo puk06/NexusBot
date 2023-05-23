@@ -1,12 +1,10 @@
 //require library
 const { Client, Intents,  MessageEmbed } = require("discord.js");
+require('dotenv').config();
 const fs = require("fs")
 const tools = require("osu-api-extended")
 
-//load dotenv
-require('dotenv').config();
-
-//requireFile
+//requireFIle
 const { calculateSR, calculateSRwithacc } = require("./CalculateSR/CalculateSRPP")
 const { modeconvert } = require("./Mode/Mode")
 const { getMapInfo, mapstatus, getMapforRecent, getMapInfowithoutmods } = require("./GetmapInfo/GetMapInfo")
@@ -21,6 +19,7 @@ const { getOsuBeatmapFile, checkStream } = require("./Streamcheck/Streamcheck")
 //apikeys
 const apikey = process.env.APIKEY
 const token = process.env.TOKEN
+
 
 //discord.js require Intents
 const client = new Client({ intents: Intents.ALL });
@@ -45,7 +44,7 @@ try{
 						if(message.content.substring(4).split(/\s+/).slice(2).length === 0){
 							Mods.push("NM")
 						}else{
-							Mods = splitString(message.content.substring(4).split(/\s+/).slice(2))
+						Mods = splitString(message.content.substring(4).split(/\s+/).slice(2))
 							if (Mods.includes("NC")) {
 								Mods.push("DT")
 								let modsnotNC = Mods.filter((item) => item.match("NC") == null);
@@ -57,7 +56,7 @@ try{
 						if(Mods.includes("DT")){
 							BPM *= 1.5
 						}else if(Mods.includes("HT")){
-							BPM /= 0.75;
+							BPM *= 0.75;
 						}
 						const mapperdata = await getplayersdata(apikey, MapInfo.mapper)
 						const Modsconverted = parseModString(Mods)
@@ -92,7 +91,7 @@ try{
 						let showonlymodsdata = message.content.substring(4).split(/\s+/).slice(2)
 						let Showonlymods = []
 						if(showonlymodsdata.length === 0){
-							Showonlymods.push("NM")
+						Showonlymods.push("NM")
 						}else{
 							Showonlymods = showonlymodsdata
 						}
@@ -101,16 +100,16 @@ try{
 
 						//make Discord.js EmbedMessage
 						const maplembed = new MessageEmbed()
-							.setColor("BLUE")
-							.setTitle(`${MapInfo.artist} - ${MapInfo.title}`)
-							.setURL(MapInfo.maplink)
-							.addField("Music and Backgroud",`:musical_note:[Song Preview](https://b.ppy.sh/preview/${MapInfo.beatmapset_id}.mp3) :frame_photo:[Full background](https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/raw.jpg)`)
-							.setAuthor(`Created by ${MapInfo.mapper}`, mapperdata.iconurl, mapperdata.playerurl)
-							.addField(`[**__${MapInfo.version}__**] **+${Showonlymods.join("")}**`, `Combo: \`${MapInfo.combo}\` Stars: \`${parseFloat(srpps.sr).toFixed(2)}\` \n Length: \`${MapInfo.lengthmin}:${lengthsec}\` BPM: \`${parseFloat(BPM).toFixed(1)}\` Objects: \`${MapInfo.combo}\` \n CS: \`${MapInfo.cs}\` AR: \`${MapInfo.ar}\` OD: \`${parseFloat(od).toFixed(2)}\` HP: \`${MapInfo.hp}\` Spinners: \`${MapInfo.countspinner}\``, true)
-							.addField("**Download**", `[Official](https://osu.ppy.sh/beatmapsets/${MapInfo.beatmapset_id}/download)\n[Nerinyan(no video)](https://api.nerinyan.moe/d/${MapInfo.beatmapset_id}?nv=1)\n[Beatconnect](https://beatconnect.io/b/${MapInfo.beatmapset_id})\n[chimu.moe](https://api.chimu.moe/v1/download/${MapInfo.beatmapset_id}?n=1)`, true)
-							.addField(`:heart: ${MapInfo.favouritecount} :play_pause: ${MapInfo.playcount}`,`\`\`\` Acc |    98%   |    99%   |   99.5%  |   100%   | \n ----+----------+----------+----------+----------+  \n  PP |${srpps.S3}|${srpps.S2}|${srpps.S1}|${srpps.S0}|\`\`\``, false)
-							.setImage(`https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/cover.jpg`)
-							.setFooter(`${Mapstatus} mapset of ${MapInfo.mapper}`)
+						.setColor("BLUE")
+						.setTitle(`${MapInfo.artist} - ${MapInfo.title}`)
+						.setURL(MapInfo.maplink)
+						.addField("Music and Backgroud",`:musical_note:[Song Preview](https://b.ppy.sh/preview/${MapInfo.beatmapset_id}.mp3) :frame_photo:[Full background](https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/raw.jpg)`)
+						.setAuthor(`Created by ${MapInfo.mapper}`, mapperdata.iconurl, mapperdata.playerurl)
+						.addField(`[**__${MapInfo.version}__**] **+${Showonlymods.join("")}**`, `Combo: \`${MapInfo.combo}\` Stars: \`${parseFloat(srpps.sr).toFixed(2)}\` \n Length: \`${MapInfo.lengthmin}:${lengthsec}\` BPM: \`${parseFloat(BPM).toFixed(1)}\` Objects: \`${MapInfo.combo}\` \n CS: \`${MapInfo.cs}\` AR: \`${MapInfo.ar}\` OD: \`${parseFloat(od).toFixed(2)}\` HP: \`${MapInfo.hp}\` Spinners: \`${MapInfo.countspinner}\``, true)
+						.addField("**Download**", `[Official](https://osu.ppy.sh/beatmapsets/${MapInfo.beatmapset_id}/download)\n[Nerinyan(no video)](https://api.nerinyan.moe/d/${MapInfo.beatmapset_id}?nv=1)\n[Beatconnect](https://beatconnect.io/b/${MapInfo.beatmapset_id})\n[chimu.moe](https://api.chimu.moe/v1/download/${MapInfo.beatmapset_id}?n=1)`, true)
+						.addField(`:heart: ${MapInfo.favouritecount} :play_pause: ${MapInfo.playcount}`,`\`\`\` Acc |    98%   |    99%   |   99.5%  |   100%   | \n ----+----------+----------+----------+----------+  \n  PP |${srpps.S3}|${srpps.S2}|${srpps.S1}|${srpps.S0}|\`\`\``, false)
+						.setImage(`https://assets.ppy.sh/beatmaps/${MapInfo.beatmapset_id}/covers/cover.jpg`)
+						.setFooter(`${Mapstatus} mapset of ${MapInfo.mapper}`)
 						message.channel.send(maplembed)
 					}
 				}catch(e){
@@ -138,10 +137,10 @@ try{
 						}
 					}
 					const recentplay = await Recentplay(apikey, playername, 0);
-					if(recentplay == 0){
+						if(recentplay == 0){
 						message.reply("No records found for this player within 24 hours")
 						return
-					}
+						}
 					let mods = parseMods(recentplay.enabled_mods)
 					let modforresult = parseMods(recentplay.enabled_mods)
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
@@ -156,7 +155,7 @@ try{
 						modsforcalc = parseModString(mods)
 						BPM *= 1.5
 					}else if(mods.includes("HT")) {
-						BPM /= 0.75;
+						BPM *= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
 					let ifFC100;
@@ -246,8 +245,8 @@ try{
 					}else {
 						playername = message.content.split(" ")[1];
 						if(playername === undefined){
-							message.reply("Error")
-							return
+						message.reply("Error")
+						return
 						}
 					}
 					const recentplay = await Recentplay(apikey, playername, 1);
@@ -269,7 +268,7 @@ try{
 						modsforcalc = parseModString(mods)
 						BPM *= 1.5
 					}else if(mods.includes("HT")) {
-						BPM /= 0.75;
+						BPM *= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
 					let ifFC100;
@@ -359,15 +358,15 @@ try{
 					}else {
 						playername = message.content.split(" ")[1];
 						if(playername === undefined){
-							message.reply("Error")
-							return
+						message.reply("Error")
+						return
 						}
 					}
 					const recentplay = await Recentplay(apikey, playername, 2);
-					if(recentplay == 0){
+						if(recentplay == 0){
 						message.reply("No records found for this player within 24 hours")
 						return
-					}
+						}
 					let mods = parseMods(recentplay.enabled_mods)
 					let modforresult = parseMods(recentplay.enabled_mods)
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
@@ -382,7 +381,7 @@ try{
 						modsforcalc = parseModString(mods)
 						BPM *= 1.5
 					}else if(mods.includes("HT")) {
-						BPM /= 0.75;
+						BPM *= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
 					let ifFC100;
@@ -479,15 +478,15 @@ try{
 					}else {
 						playername = message.content.split(" ")[1];
 						if(playername === undefined){
-							message.reply("Error")
-							return
+						message.reply("Error")
+						return
 						}
 					}
 					const recentplay = await Recentplay(apikey, playername, 3);
-					if(recentplay == 0){
+						if(recentplay == 0){
 						message.reply("No records found for this player within 24 hours")
 						return
-					}
+						}
 					let mods = parseMods(recentplay.enabled_mods)
 					let modforresult = parseMods(recentplay.enabled_mods)
 					const GetMapInfo = await getMapforRecent(recentplay.beatmap_id, apikey, mods);
@@ -502,7 +501,7 @@ try{
 						modsforcalc = parseModString(mods)
 						BPM *= 1.5
 					}else if(mods.includes("HT")) {
-						BPM /= 0.75;
+						BPM *= 0.75;
 					}
 					let sr = await calculateSR(recentplay.beatmap_id, modsforcalc, modeconvert(GetMapInfo.mode))
 
@@ -869,7 +868,7 @@ try{
 					if (stringmods.includes("DT") || stringmods.includes("NC")) {
 						bpm *= 1.5;
 					}else if(stringmods.includes("HT")){
-						bpm /= 0.75
+						bpm *= 0.75
 					}
 
 					const embed = new MessageEmbed()
